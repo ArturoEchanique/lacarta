@@ -11,6 +11,12 @@ export default async function IndexPage({
   searchParams: { q: string };
 }) {
   const search = searchParams.q ?? '';
+  const nombre = 'sdfsdxxxxxxxxf'
+  await queryBuilder
+  .updateTable('cartas')
+  .set( {nombre} )
+  .where('carta_id', '=', 1)
+  .execute();
   const users = await queryBuilder
     .selectFrom('usuarios')
     .select(['user_id', 'username', 'email'])
