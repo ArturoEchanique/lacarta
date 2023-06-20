@@ -12,7 +12,7 @@ interface Props {
     idCategoria: number; // Añadido aquí
 }
   
-const Modal: React.FC<Props> = ({ onClose, onPlatoAdded, idCategoria }) => { // Y aquí
+const ModalPlato: React.FC<Props> = ({ onClose, onPlatoAdded, idCategoria }) => { // Y aquí
   const [plato, setPlato] = useState<Plato>({ nombre: '', description: '', precio: 0});
   
   const handlePlatoChange = (field: string, value: string | number) => {
@@ -73,4 +73,4 @@ const Modal: React.FC<Props> = ({ onClose, onPlatoAdded, idCategoria }) => { // 
   );
 };
 
-export default Modal;
+export default ModalPlato;

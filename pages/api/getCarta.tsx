@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const cartaData = await queryBuilder
         .selectFrom('cartas')
-        .select(['nombre'])
+        .select(['carta_id', 'nombre'])
         .where('carta_id', '=', idCarta)
         .execute();
 
@@ -20,6 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const carta = cartaData.map((data: any) => ({
         nombre: data.nombre,
+        id: data.carta_id,
         categorias: categoriasData.map((catData: any) => ({
           id: catData.categoria_id,
           nombre: catData.nombre,

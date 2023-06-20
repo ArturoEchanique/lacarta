@@ -6,6 +6,7 @@ import { Card, Title, Text } from '@tremor/react';
 import Carta from '../carta';  // Asegúrate de tener un componente CartaTable
 
 interface Carta {
+  id: number;
   nombre: string;
   categorias: Categoria[];
 }
@@ -27,6 +28,8 @@ const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
   const [carta, setCarta] = useState<Carta | null>(null);
   const [nombre, setNombre] = useState('');
   const [platoAdded, setPlatoAdded] = useState(false);  // Nuevo estado para rastrear cuando se añade un nuevo plato
+  const [categoriaAdded, setCategoriaAdded] = useState(false);  // Nuevo estado para rastrear cuando se añade un nuevo plato
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,7 +50,7 @@ const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
     };
 
     fetchData();
-  }, [idCarta, platoAdded]);  // Se ejecuta cuando se monta el componente, cada vez que idCarta cambia y cuando se añade un nuevo plato
+  }, [idCarta, platoAdded, categoriaAdded]);  // Se ejecuta cuando se monta el componente, cada vez que idCarta cambia y cuando se añade un nuevo plato
 
   if (!carta) {
     return <div>Loading...</div>;  // Puedes mostrar un spinner de carga aquí
@@ -57,7 +60,7 @@ const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
     <div className="carta">
       <MetaCartaEdit nombreInicial={carta.nombre} cartaID={idCarta} guardarNombre={setNombre} />
       <Card className="mt-6">
-        <Carta carta={carta} onPlatoAdded={() => setPlatoAdded(!platoAdded)} /> {/* Pasar la función onPlatoAdded para ser llamada cuando se añada un nuevo plato */}
+        <Carta carta={carta} onPlatoAdded={() => setPlatoAdded(!platoAdded)} onCategoriaAdded={() => setCategoriaAdded(!categoriaAdded)}/> {/* Pasar la función onPlatoAdded para ser llamada cuando se añada un nuevo plato */}
       </Card>
       <CartaFormClient idCarta={idCarta} />
     </div>

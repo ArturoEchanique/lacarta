@@ -1,8 +1,10 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import ModalContainer from '../components/modalContainer/ModalContainer';
+import ModalContainer from '../components/modalContainerPlato/ModalContainerPlato';
+import ModalContainerCategoria from '../components/modalContainerCategoria/ModalContainerCategoria';
 
 interface Carta {
+  id: number
   nombre: string;
   categorias: Categoria[];
 }
@@ -19,13 +21,18 @@ interface Plato {
   ingredientes: string;
 }
 
-export default function Carta({ carta, onPlatoAdded }: { carta: Carta, onPlatoAdded: () => void }) {
-  const [showModal, setShowModal] = useState(false);
+export default function Carta({ carta, onPlatoAdded, onCategoriaAdded }: { carta: Carta, onPlatoAdded: () => void, onCategoriaAdded: () => void }) {  
+  const [showModalPlato, setShowModalPlato] = useState(false);
   const [categoriaID, setCategoriaID] = useState<number | null>(null); 
+  const [showModalCategoria, setShowModalCategoria] = useState(false);
 
-  const handleOpenModal = (id: number) => {
+  const handleOpenModalCategoria = () => {
+    setShowModalCategoria(true);
+  };
+  
+  const handleOpenModalPlato = (id: number) => {
     setCategoriaID(id); 
-    setShowModal(true);
+    setShowModalPlato(true);
   };
 
   return (
@@ -33,6 +40,7 @@ export default function Carta({ carta, onPlatoAdded }: { carta: Carta, onPlatoAd
       <div className="max-w-xl w-full bg-white rounded-lg shadow-lg p-8">
         <div className="flex items-center justify-center">
           <h1 className="text-2xl font-bold">{carta.nombre}</h1>
+          <button onClick={handleOpenModalCategoria}>Agregar categoría</button>
         </div>
         <div className="mt-8">
           {carta.categorias.map((categoria) => (
@@ -51,12 +59,13 @@ export default function Carta({ carta, onPlatoAdded }: { carta: Carta, onPlatoAd
                     <p className="font-semibold">{plato.precio}</p>
                   </div>
                 ))}
-                <button onClick={() => handleOpenModal(categoria.id)}>Agregar plato</button> {/* Pasa el ID de la categoría al manejador de eventos */}
+                <button onClick={() => handleOpenModalPlato(categoria.id)}>Agregar plato</button> {/* Pasa el ID de la categoría al manejador de eventos */}
               </div>
             </div>
           ))}
         </div>
-        {showModal && categoriaID !== null && <ModalContainer idCategoria={categoriaID} onClose={() => {setShowModal(false); setCategoriaID(null);}} onPlatoAdded={onPlatoAdded} />}
+        {showModalPlato && categoriaID !== null && <ModalContainer idCategoria={categoriaID} onClose={() => {setShowModalPlato(false); setCategoriaID(null);}} onPlatoAdded={onPlatoAdded} />}
+        {showModalCategoria && carta.id !== null && <ModalContainerCategoria idCarta={carta.id} onClose={() => {setShowModalCategoria(false);}} onCategoriaAdded={onCategoriaAdded} />}
       </div>
     </div>
   );

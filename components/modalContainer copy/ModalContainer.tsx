@@ -1,6 +1,6 @@
 // ModalContainer.tsx
 import React from 'react';
-import Modal from '../modal/Modal';
+import Modal from '../modalPlato/ModalPlato';
 
 interface Props {
   onClose: () => void;
