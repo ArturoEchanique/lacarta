@@ -8,7 +8,7 @@ interface Carta {
 }
 
 interface Categoria {
-  categoriaID: number;
+  id: number;
   nombre: string;
   orden: number;
   platos: Plato[];
@@ -48,7 +48,7 @@ export default async function CartaPage({
     .execute();
 
   const categorias: Categoria[] = categoriasData.map((data: any) => ({
-    categoriaID: data.categoria_id,
+    id: data.categoria_id,
     nombre: data.nombre,
     orden: data.orden,
     platos: []
@@ -58,7 +58,7 @@ export default async function CartaPage({
     const platosData = await queryBuilder
       .selectFrom('platos')
       .select(['nombre', 'precio', 'ingredientes'])
-      .where('categoria_id', '=', categorias[i].categoriaID)
+      .where('categoria_id', '=', categorias[i].id)
       .execute();
     const platos: Plato[] = platosData.map((data: any) => ({
       nombre: data.nombre,

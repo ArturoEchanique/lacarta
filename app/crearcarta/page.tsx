@@ -11,7 +11,7 @@ interface Carta {
 }
 
 interface Categoria {
-  categoriaID: number;
+  id: number;
   nombre: string;
   orden: number;
   platos: Plato[];
@@ -26,6 +26,7 @@ interface Plato {
 const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
   const [carta, setCarta] = useState<Carta | null>(null);
   const [nombre, setNombre] = useState('');
+  const [platoAdded, setPlatoAdded] = useState(false);  // Nuevo estado para rastrear cuando se añade un nuevo plato
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,7 +47,7 @@ const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
     };
 
     fetchData();
-  }, [idCarta]);  // Se ejecuta cuando se monta el componente y cada vez que idCarta cambia
+  }, [idCarta, platoAdded]);  // Se ejecuta cuando se monta el componente, cada vez que idCarta cambia y cuando se añade un nuevo plato
 
   if (!carta) {
     return <div>Loading...</div>;  // Puedes mostrar un spinner de carga aquí
@@ -56,7 +57,7 @@ const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
     <div className="carta">
       <MetaCartaEdit nombreInicial={carta.nombre} cartaID={idCarta} guardarNombre={setNombre} />
       <Card className="mt-6">
-        <Carta carta={carta} />
+        <Carta carta={carta} onPlatoAdded={() => setPlatoAdded(!platoAdded)} /> {/* Pasar la función onPlatoAdded para ser llamada cuando se añada un nuevo plato */}
       </Card>
       <CartaFormClient idCarta={idCarta} />
     </div>
