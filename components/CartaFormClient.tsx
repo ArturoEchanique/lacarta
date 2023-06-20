@@ -1,6 +1,7 @@
 // CartaFormClient.tsx
 'use client';
 import { useState, FC } from 'react';
+import MetaCartaEdit from './metaCartaEdit/MetaCartaEdit';
 
 type Plato = {
   nombre: string;
@@ -16,7 +17,6 @@ type Categoria = {
 
 const CartaFormClient: FC<{ idCarta: number }> = ({ idCarta }) => {
   const [nombre, setNombre] = useState('');
-  // const [platos, setPlatos] = useState<Plato[]>([{ nombre: '', description: '', precio: 0 }]);
   const [categorias, setCategorias] = useState<Categoria[]>([{ nombre: '', orden: 0, platos: [{ nombre: '', description: '', precio: 0 }] }]);
 
   // Handle category changes
@@ -65,8 +65,6 @@ const CartaFormClient: FC<{ idCarta: number }> = ({ idCarta }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    // console.log({ nombre, idCarta, categorias });
-
     try {
       // Hacer una solicitud POST a la ruta API
       const response = await fetch('/api/updateCarta', {
@@ -91,66 +89,69 @@ const CartaFormClient: FC<{ idCarta: number }> = ({ idCarta }) => {
   };
 
   return (
-    <form className="card-form" onSubmit={handleSubmit}>
-      <label>
-        Nombre de la Carta:
-        <input
-          type="text"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-        />
-      </label>
-      {categorias.map((categoria, indexCategoria) => (
-        <div key={indexCategoria}>
-          <label>
-            Nombre de la Categoria:
-            <input
-              type="text"
-              value={categoria.nombre}
-              onChange={(e) => handleCategoriaChange(indexCategoria, e.target.value)}
-            />
-          </label>
-          {categoria.platos.map((plato, indexPlato) => (
-            <div key={indexPlato}>
-              <label>
-                Nombre del Plato:
-                <input
-                  type="text"
-                  value={plato.nombre}
-                  onChange={(e) => handlePlatoChange(indexCategoria, indexPlato, e.target.value, plato.description, plato.precio)}
-                />
-              </label>
-              <label>
-                Ingredientes:
-                <input
-                  type="text"
-                  value={plato.description}
-                  onChange={(e) => handlePlatoChange(indexCategoria, indexPlato, plato.nombre, e.target.value, plato.precio)}
-                />
-              </label>
-              <label>
-                Precio:
-                <input
-                  type="number"
-                  value={plato.precio}
-                  onChange={(e) => handlePlatoChange(indexCategoria, indexPlato, plato.nombre, plato.description, Number(e.target.value))}
-                />
-              </label>
-            </div>
-          ))}
-          <button type="button" onClick={() => addPlato(indexCategoria)}>
-            Añadir Plato
-          </button>
-        </div>
-      ))}
-      <button type="button" onClick={addCategoria}>
-        Añadir Categoria
-      </button>
-      <button type="button" onClick={handleDeletePlatos}>
-        Borrar Platos
-      </button>
-      <input type="submit" value="Guardar Carta" />
-    </form>
+    <>
+        {/* <MetaCartaEdit nombreInicial={nombre} cartaID={1} guardarNombre={setNombre} /> */}
+      <form className="card-form" onSubmit={handleSubmit}>
+        <label>
+          Nombre de la Carta:
+          <input
+            type="text"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+          />
+        </label>
+        {categorias.map((categoria, indexCategoria) => (
+          <div key={indexCategoria}>
+            <label>
+              Nombre de la Categoria:
+              <input
+                type="text"
+                value={categoria.nombre}
+                onChange={(e) => handleCategoriaChange(indexCategoria, e.target.value)}
+              />
+            </label>
+            {categoria.platos.map((plato, indexPlato) => (
+              <div key={indexPlato}>
+                <label>
+                  Nombre del Plato:
+                  <input
+                    type="text"
+                    value={plato.nombre}
+                    onChange={(e) => handlePlatoChange(indexCategoria, indexPlato, e.target.value, plato.description, plato.precio)}
+                  />
+                </label>
+                <label>
+                  Ingredientes:
+                  <input
+                    type="text"
+                    value={plato.description}
+                    onChange={(e) => handlePlatoChange(indexCategoria, indexPlato, plato.nombre, e.target.value, plato.precio)}
+                  />
+                </label>
+                <label>
+                  Precio:
+                  <input
+                    type="number"
+                    value={plato.precio}
+                    onChange={(e) => handlePlatoChange(indexCategoria, indexPlato, plato.nombre, plato.description, Number(e.target.value))}
+                  />
+                </label>
+              </div>
+            ))}
+            <button type="button" onClick={() => addPlato(indexCategoria)}>
+              Añadir Plato
+            </button>
+          </div>
+        ))}
+        <button type="button" onClick={addCategoria}>
+          Añadir Categoria
+        </button>
+        <button type="button" onClick={handleDeletePlatos}>
+          Borrar Platos
+        </button>
+        <input type="submit" value="Guardar Carta" />
+      </form>
+    </>
   );
 };
 
