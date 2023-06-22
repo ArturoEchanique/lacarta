@@ -32,14 +32,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       for (let i = 0; i < carta[0].categorias.length; i++) {
         const platosData = await queryBuilder
           .selectFrom('platos')
-          .select(['nombre', 'precio', 'ingredientes'])
+          .select(['plato_id', 'nombre', 'precio', 'ingredientes', 'orden'])
           .where('categoria_id', '=', carta[0].categorias[i].id)
           .execute();
         const platos = platosData.map((data: any) => ({
+          id: data.plato_id,
+          idCategoria: carta[0].categorias[i].id,
           nombre: data.nombre,
           precio: data.precio,
-          ingredientes: data.ingredientes
+          ingredientes: data.ingredientes,
+          orden: data.orden
         }));
+        platos.forEach((plato, index) => {
+          console.log(`Orden del plato ${index} en la categoría ${i}:`, plato.orden);
+        });
         carta[0].categorias[i].platos = platos;
       }
 

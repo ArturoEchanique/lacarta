@@ -1,6 +1,6 @@
 import { Card, Title, Text } from '@tremor/react';
 import { queryBuilder } from '../../lib/planetscale';
-import Carta from '.././carta';  // Asegúrate de tener un componente CartaTable
+import Carta from '../cartaComponent';  // Asegúrate de tener un componente CartaTable
 
 interface Carta {
   nombre: string;

@@ -1,28 +1,28 @@
 'use client';
 import { useState, useEffect, FC } from 'react';
-import CartaFormClient from '../../components/CartaFormClient';
 import MetaCartaEdit from '../../components/metaCartaEdit/MetaCartaEdit';
+import { Categoria, Carta, Plato } from '../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
 import { Card, Title, Text } from '@tremor/react';
-import Carta from '../carta';  // Asegúrate de tener un componente CartaTable
+import CartaComponent from '../cartaComponent';  // Asegúrate de tener un componente CartaTable
 
-interface Carta {
-  id: number;
-  nombre: string;
-  categorias: Categoria[];
-}
+// interface Carta {
+//   id: number;
+//   nombre: string;
+//   categorias: Categoria[];
+// }
 
-interface Categoria {
-  id: number;
-  nombre: string;
-  orden: number;
-  platos: Plato[];
-}
+// interface Categoria {
+//   id: number;
+//   nombre: string;
+//   orden: number;
+//   platos: Plato[];
+// }
 
-interface Plato {
-  nombre: string;
-  precio: number;
-  ingredientes: string;
-}
+// interface Plato {
+//   nombre: string;
+//   precio: number;
+//   ingredientes: string;
+// }
 
 const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
   const [carta, setCarta] = useState<Carta | null>(null);
@@ -45,8 +45,23 @@ const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      let data = await response.json();
+
+      // Ordena las categorías antes de establecer el estado
+      data.carta.categorias.sort((a: Categoria, b: Categoria) => a.orden - b.orden);
+      console.log("orden de categorias es...: ", data.carta.categorias[0]?.orden, data.carta.categorias[1]?.orden)
+
+
+      data.carta.categorias.forEach((categoria: Categoria) => {
+        console.log("orden de platos 0 y 1 e...: ", categoria.platos[0]?.orden, categoria.platos[1]?.orden)
+      });
+      
+      data.carta.categorias.forEach((categoria: Categoria) => {
+        categoria.platos.sort((a: Plato, b: Plato) => a.orden - b.orden);
+      });
+
       setCarta(data.carta);
+      console.log("fetching data again, carta is: ", data.carta)
     };
 
     fetchData();
@@ -60,9 +75,8 @@ const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
     <div className="carta">
       <MetaCartaEdit nombreInicial={carta.nombre} cartaID={idCarta} guardarNombre={setNombre} />
       <Card className="mt-6">
-        <Carta carta={carta} onPlatoAdded={() => setPlatoAdded(!platoAdded)} onCategoriaAdded={() => setCategoriaAdded(!categoriaAdded)}/> {/* Pasar la función onPlatoAdded para ser llamada cuando se añada un nuevo plato */}
+        <CartaComponent carta={carta} onPlatoAdded={() => setPlatoAdded(!platoAdded)} onCategoriaAdded={() => setCategoriaAdded(!categoriaAdded)} /> {/* Pasar la función onPlatoAdded para ser llamada cuando se añada un nuevo plato */}
       </Card>
-      <CartaFormClient idCarta={idCarta} />
     </div>
   );
 }
