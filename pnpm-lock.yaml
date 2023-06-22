@@ -65,9 +65,15 @@ dependencies:
   react-beautiful-dnd:
     specifier: ^13.1.1
     version: 13.1.1(react-dom@18.2.0)(react@18.2.0)
+  react-collapse:
+    specifier: ^5.1.1
+    version: 5.1.1(react@18.2.0)
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
+  react-headless-accordion:
+    specifier: ^1.0.2
+    version: 1.0.2(react@18.2.0)
   server-only:
     specifier: ^0.0.1
     version: 0.0.1
@@ -79,6 +85,9 @@ devDependencies:
   '@types/react-beautiful-dnd':
     specifier: ^13.1.4
     version: 13.1.4
+  '@types/react-collapse':
+    specifier: ^5.0.1
+    version: 5.0.1
   autoprefixer:
     specifier: ^10.4.14
     version: 10.4.14(postcss@8.4.23)
@@ -471,6 +480,12 @@ packages:
 
   /@types/react-beautiful-dnd@13.1.4:
     resolution: {integrity: sha512-4bIBdzOr0aavN+88q3C7Pgz+xkb7tz3whORYrmSj77wfVEMfiWiooIwVWFR7KM2e+uGTe5BVrXqSfb0aHeflJA==}
+    dependencies:
+      '@types/react': 18.2.6
+    dev: true
+
+  /@types/react-collapse@5.0.1:
+    resolution: {integrity: sha512-Iq3OrqvzCIP0DmAawU4T2VKH6XAplbjo/D7Qk14mcfQ92plU+OrA2SF10r2XrcFg1Wvya/5f8w1vS29RVpdoLQ==}
     dependencies:
       '@types/react': 18.2.6
     dev: true
@@ -2651,6 +2666,14 @@ packages:
       - react-native
     dev: false
 
+  /react-collapse@5.1.1(react@18.2.0):
+    resolution: {integrity: sha512-k6cd7csF1o9LBhQ4AGBIdxB60SUEUMQDAnL2z1YvYNr9KoKr+nDkhN6FK7uGaBd/rYrYfrMpzpmJEIeHRYogBw==}
+    peerDependencies:
+      react: '>=16.3.0'
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /react-dom@18.2.0(react@18.2.0):
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
     peerDependencies:
@@ -2659,6 +2682,14 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-headless-accordion@1.0.2(react@18.2.0):
+    resolution: {integrity: sha512-wKBTB/+aAr9MGX5RYi3sdmKOSzevKdmbGRw9JTe7XONiHlTo+pC1OiggL9NUxp5QeQcTnX0rryhuySeGsqBfBg==}
+    peerDependencies:
+      react: ^18.2.0
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is@16.13.1:

@@ -1,4 +1,5 @@
 'use client';
+import { Accordion, AccordionBody, AccordionHeader, AccordionItem } from "react-headless-accordion";
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import React, { useState, useEffect } from 'react';
 import { Categoria, Carta, Plato } from '../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
@@ -95,22 +96,23 @@ export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCa
       console.log(data);
     } catch (error) {
       console.error('An error occurred while fetching the data.', error);
-    }  }
+    }
+  }
 
-    const handleDeletePlatos = async (cartaid: number) => {
-      // Hacer una solicitud DELETE a la ruta API para borrar los platos
-      const response = await fetch(`/api/deletePlatos`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // Incluir los platos en el cuerpo de la solicitud
-        body: JSON.stringify({ cartaid }),
-      });
-  
-      // Actualizar el estado de platos a un array vacío
-      // setPlatos([]);
-    };
+  const handleDeletePlatos = async (cartaid: number) => {
+    // Hacer una solicitud DELETE a la ruta API para borrar los platos
+    const response = await fetch(`/api/deletePlatos`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // Incluir los platos en el cuerpo de la solicitud
+      body: JSON.stringify({ cartaid }),
+    });
+
+    // Actualizar el estado de platos a un array vacío
+    // setPlatos([]);
+  };
 
   return (
     <>
@@ -119,50 +121,58 @@ export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCa
         <button onClick={handleOpenModalCategoria}>Agregar categoría</button>
         <button onClick={() => handleDeletePlatos(carta.id)}>Borrar Platos</button>
       </div>
-      
+
       <DragDropContext onDragEnd={handleOnDragEndCategoria}>
         <Droppable droppableId="categorias">
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
-              {carta.categorias.map((categoria, index) => (
-                <Draggable key={categoria.id} draggableId={String(categoria.id)} index={index}>
-                  {(provided) => (
-                    <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                      <h2 className="text-xl font-bold mb-4">{categoria.nombre}</h2>
-                      <div className="bg-gray-200 p-4 rounded-lg">
-                        <DragDropContext onDragEnd={handleOnDragEndPlato(categoria.id)}>
-                          <Droppable droppableId={`platos-${categoria.id}`}>
-                            {(provided) => (
-                              <div {...provided.droppableProps} ref={provided.innerRef}>
-                                {categoria.platos.map((plato, index) => (
-                                  <Draggable key={plato.nombre} draggableId={plato.nombre} index={index}>
-                                    {(provided) => (
-                                      <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                        <div className="flex items-center justify-between mb-4" key={plato.nombre}>
-                                          <div className="flex items-center">
-                                            <div className="w-10 h-10 bg-gray-400 rounded-full mr-4" />
-                                            <div>
-                                              <h3 className="font-semibold">{plato.nombre}</h3>
-                                              <p className="text-gray-600">{plato.ingredientes}</p>
+              <Accordion>
+                {carta.categorias.map((categoria, index) => (
+                  <Draggable key={categoria.id} draggableId={String(categoria.id)} index={index}>
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                        <AccordionItem>
+                          <AccordionHeader>
+                            <h2 className="text-xl font-bold mb-4">{categoria.nombre}</h2>
+                          </AccordionHeader>
+                          <AccordionBody>
+                            <div className="bg-gray-200 p-4 rounded-lg">
+                              <DragDropContext onDragEnd={handleOnDragEndPlato(categoria.id)}>
+                                <Droppable droppableId={`platos-${categoria.id}`}>
+                                  {(provided) => (
+                                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                                      {categoria.platos.map((plato, index) => (
+                                        <Draggable key={plato.nombre} draggableId={plato.nombre} index={index}>
+                                          {(provided) => (
+                                            <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                                              <div className="flex items-center justify-between mb-4" key={plato.nombre}>
+                                                <div className="flex items-center">
+                                                  <div className="w-10 h-10 bg-gray-400 rounded-full mr-4" />
+                                                  <div>
+                                                    <h3 className="font-semibold">{plato.nombre}</h3>
+                                                    <p className="text-gray-600">{plato.ingredientes}</p>
+                                                  </div>
+                                                </div>
+                                                <p className="font-semibold">{plato.precio}</p>
+                                              </div>
                                             </div>
-                                          </div>
-                                          <p className="font-semibold">{plato.precio}</p>
-                                        </div>
-                                      </div>
-                                    )}
-                                  </Draggable>
-                                ))}
-                                {provided.placeholder}
-                              </div>
-                            )}
-                          </Droppable>
-                        </DragDropContext>
-                        <button onClick={() => handleOpenModalPlato(categoria.id)}>Agregar plato</button>
+                                          )}
+                                        </Draggable>
+                                      ))}
+                                      {provided.placeholder}
+                                    </div>
+                                  )}
+                                </Droppable>
+                              </DragDropContext>
+                              <button onClick={() => handleOpenModalPlato(categoria.id)}>Agregar plato</button>
+                            </div>
+                          </AccordionBody>
+                        </AccordionItem>
                       </div>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
+                    )}
+                  </Draggable>
+                ))}
+              </Accordion>
               {provided.placeholder}
             </div>
           )}
