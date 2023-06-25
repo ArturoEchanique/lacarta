@@ -4,13 +4,12 @@ import { queryBuilder } from '../../lib/planetscale';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     
     if (req.method === 'POST') {
-        const { idCategoria, plato } = req.body;
-        console.log(idCategoria);
+        const { plato } = req.body;
         try {
             await queryBuilder
                 .insertInto('platos')
-                .columns(['nombre', 'precio', 'categoria_id', 'ingredientes'])
-                .values({ nombre: plato.nombre, precio: plato.precio, categoria_id: idCategoria, ingredientes: plato.description })
+                .columns(['nombre', 'precio', 'categoria_id', 'ingredientes', 'orden'])
+                .values({ nombre: plato.nombre, precio: plato.precio, categoria_id: plato.idCategoria, ingredientes: plato.descripcion, orden: plato.orden })
                 .execute();
 
             res.status(200).json({ message: 'Carta, categorias y platos updated successfully' });

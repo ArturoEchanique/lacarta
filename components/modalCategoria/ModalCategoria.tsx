@@ -1,18 +1,16 @@
 // ModalCategoria.tsx
 import React, { useState } from 'react';
-
-type Categoria = {
-  nombre: string;
-};
+import { Categoria } from '../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
 
 interface Props {
-    onClose: () => void;
-    onCategoriaAdded: () => void;
-    idCarta: number; // Añadido aquí
+  onClose: () => void;
+  onCategoriaAdded: (categoria: Categoria) => void;
+  idCarta: number;
+  index:number;
 }
 
-const ModalCategoria: React.FC<Props> = ({ onClose, onCategoriaAdded, idCarta }) => {
-  const [categoria, setCategoria] = useState<Categoria>({ nombre: '' });
+const ModalCategoria: React.FC<Props> = ({ onClose, onCategoriaAdded, idCarta, index }) => {
+  const [categoria, setCategoria] = useState<Categoria>({ id: 0, nombre: '', platos: [], orden: index });
 
   const handleCategoriaChange = (field: string, value: string) => {
     setCategoria(prevState => ({ ...prevState, [field]: value }));
@@ -20,7 +18,7 @@ const ModalCategoria: React.FC<Props> = ({ onClose, onCategoriaAdded, idCarta })
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+    onClose();
     try {
       const response = await fetch('/api/addCategoria', {
         method: 'POST',
@@ -29,20 +27,23 @@ const ModalCategoria: React.FC<Props> = ({ onClose, onCategoriaAdded, idCarta })
         },
         body: JSON.stringify({ idCarta, categoria }),
       });
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
+  
       const data = await response.json();
+  
+      // Actualiza el objeto categoria con el ID recibido del servidor
+      const updatedCategoria = { ...categoria, id: data.categoria.categoria_id };
+  
+      onCategoriaAdded(updatedCategoria);
       console.log(data);
-      onCategoriaAdded(); 
     } catch (error) {
       console.error('An error occurred while fetching the data.', error);
     }
-    onClose();
   };
-
+  
   return (
     <form onSubmit={handleSubmit}>
       <div>

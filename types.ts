@@ -4,7 +4,7 @@ export interface Plato {
   idCategoria: number;
   nombre: string;
   precio: number;
-  ingredientes: string;
+  descripcion: string;
   orden: number; // Añadido el campo 'orden'
 }
 

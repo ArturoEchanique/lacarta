@@ -1,14 +1,16 @@
 // ModalContainerCategoria.tsx
 import React from 'react';
 import ModalCategoria from '../modalCategoria/ModalCategoria';
+import { Categoria } from '../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
 
 interface Props {
   onClose: () => void;
-  onCategoriaAdded: () => void;
+  onCategoriaAdded: (categoria: Categoria) => void;
   idCarta: number;
+  index:number;
 }
 
-const ModalContainerCategoria: React.FC<Props> = ({ onClose, onCategoriaAdded, idCarta }) => {
+const ModalContainerCategoria: React.FC<Props> = ({ onClose, onCategoriaAdded, idCarta, index }) => {
   return (
     <div className="fixed z-10 inset-0 overflow-y-auto">
       <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -17,7 +19,7 @@ const ModalContainerCategoria: React.FC<Props> = ({ onClose, onCategoriaAdded, i
         </div>
         <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
         <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-          <ModalCategoria onClose={onClose} onCategoriaAdded={onCategoriaAdded} idCarta={idCarta}/>
+          <ModalCategoria onClose={onClose} onCategoriaAdded={onCategoriaAdded} idCarta={idCarta} index={index}/>
         </div>
       </div>
     </div>

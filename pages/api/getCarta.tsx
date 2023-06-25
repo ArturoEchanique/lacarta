@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           idCategoria: carta[0].categorias[i].id,
           nombre: data.nombre,
           precio: data.precio,
-          ingredientes: data.ingredientes,
+          descripcion: data.ingredientes,
           orden: data.orden
         }));
         platos.forEach((plato, index) => {

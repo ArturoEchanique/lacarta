@@ -3,10 +3,10 @@ import { Accordion, AccordionBody, AccordionHeader, AccordionItem } from "react-
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import React, { useState, useEffect } from 'react';
 import { Categoria, Carta, Plato } from '../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
-import ModalContainer from '../components/modalContainerPlato/ModalContainerPlato';
+import ModalContainerPlato from '../components/modalContainerPlato/ModalContainerPlato';
 import ModalContainerCategoria from '../components/modalContainerCategoria/ModalContainerCategoria';
 
-export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCategoriaAdded }: { carta: Carta, onPlatoAdded: () => void, onCategoriaAdded: () => void }) {
+export default function CartaComponent({ carta: initialCarta }: { carta: Carta }) {
   const [showModalPlato, setShowModalPlato] = useState(false);
   const [categoriaID, setCategoriaID] = useState<number | null>(null);
   const [showModalCategoria, setShowModalCategoria] = useState(false);
@@ -14,11 +14,18 @@ export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCa
 
   useEffect(() => {
     setCarta(initialCarta);
+    initialCarta.categorias.forEach((categoria) => {
+      console.log('Categoría:', categoria.nombre);
+      categoria.platos.forEach((plato) => {
+        console.log('Plato:', plato.nombre, 'Orden:', plato.orden);
+      });
+    });
   }, [initialCarta]);
 
   const handleOpenModalCategoria = () => {
     setShowModalCategoria(true);
   };
+
 
   const handleOpenModalPlato = (id: number) => {
     setCategoriaID(id);
@@ -189,6 +196,31 @@ export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCa
     }
   }
 
+  const onPlatoAdded = (plato: Plato) => {
+    // Encuentra la categoría a la que se debe agregar el plato
+    const categoriaIndex = carta.categorias.findIndex((cat) => cat.id === plato.idCategoria);
+    if (categoriaIndex === -1) {
+      console.error('La categoría no se encontró en la carta.');
+      return;
+    }
+
+    // Agrega el plato a la categoría y actualiza el estado de la carta
+    setCarta(prevCarta => {
+      const newCarta = { ...prevCarta };
+      newCarta.categorias[categoriaIndex].platos.push(plato);
+      return newCarta;
+    });
+  }
+
+  const onCategoriaAdded = (categoria: Categoria) => {
+
+    setCarta(prevCarta => {
+      const newCarta = { ...prevCarta };
+      newCarta.categorias.push(categoria);
+      return newCarta;
+    });
+  }
+
   return (
     <>
       <div className="flex items-center justify-center">
@@ -206,7 +238,7 @@ export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCa
                   <Draggable key={categoria.id} draggableId={String(categoria.id)} index={index}>
                     {(provided) => (
                       <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                        <AccordionItem>
+                        <AccordionItem key={categoria.id} isActive={categoria.platos.length < 4}>
                           <AccordionHeader>
                             <div className="flex justify-between items-center">
                               <h2 className="text-xl font-bold mb-4">{categoria.nombre}</h2>
@@ -228,7 +260,7 @@ export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCa
                                                   <div className="w-10 h-10 bg-gray-400 rounded-full mr-4" />
                                                   <div>
                                                     <h3 className="font-semibold">{plato.nombre}</h3>
-                                                    <p className="text-gray-600">{plato.ingredientes}</p>
+                                                    <p className="text-gray-600">{plato.descripcion}</p>
                                                   </div>
                                                 </div>
                                                 <p className="font-semibold">{plato.precio}</p>
@@ -257,8 +289,9 @@ export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCa
         </Droppable>
       </DragDropContext>
       {showModalPlato && categoriaID !== null &&
-        <ModalContainer
+        <ModalContainerPlato
           idCategoria={categoriaID}
+          index={carta.categorias.find(cat => cat.id === categoriaID)?.platos.length || 0}
           onClose={() => { setShowModalPlato(false); setCategoriaID(null); }}
           onPlatoAdded={onPlatoAdded}
         />
@@ -266,6 +299,7 @@ export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCa
       {showModalCategoria && carta.id !== null &&
         <ModalContainerCategoria
           idCarta={carta.id}
+          index={carta.categorias.length || 0}
           onClose={() => { setShowModalCategoria(false); }}
           onCategoriaAdded={onCategoriaAdded}
         />

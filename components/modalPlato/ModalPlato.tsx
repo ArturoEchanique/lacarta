@@ -1,27 +1,24 @@
 import React, { useState } from 'react';
+import { Plato } from '../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
 
-type Plato = {
-  nombre: string;
-  description: string;
-  precio: number;
-};
 
 interface Props {
-    onClose: () => void;
-    onPlatoAdded: () => void;
-    idCategoria: number; // Añadido aquí
+  onClose: () => void;
+  onPlatoAdded: (plato: Plato) => void;
+  idCategoria: number; // Añadido aquí
+  index: number;
 }
-  
-const ModalPlato: React.FC<Props> = ({ onClose, onPlatoAdded, idCategoria }) => { // Y aquí
-  const [plato, setPlato] = useState<Plato>({ nombre: '', description: '', precio: 0});
-  
+
+const ModalPlato: React.FC<Props> = ({ onClose, onPlatoAdded, idCategoria, index }) => { // Y aquí
+  const [plato, setPlato] = useState<Plato>({ id: 0, idCategoria: idCategoria, nombre: '', precio: 0, descripcion: '', orden: index });
+
   const handlePlatoChange = (field: string, value: string | number) => {
     setPlato(prevState => ({ ...prevState, [field]: value }));
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+    onClose();
     try {
       // Hacer una solicitud POST a la ruta API
       const response = await fetch('/api/addPlato', {
@@ -30,7 +27,7 @@ const ModalPlato: React.FC<Props> = ({ onClose, onPlatoAdded, idCategoria }) => 
           'Content-Type': 'application/json',
         },
         // Incluir las categorias en el cuerpo de la solicitud
-        body: JSON.stringify({ idCategoria, plato }), // idCategoria es ahora accesible
+        body: JSON.stringify({ plato }), // idCategoria es ahora accesible
       });
 
       if (!response.ok) {
@@ -39,12 +36,11 @@ const ModalPlato: React.FC<Props> = ({ onClose, onPlatoAdded, idCategoria }) => 
 
       // Aquí puedes manejar la respuesta si todo va bien
       const data = await response.json();
+      onPlatoAdded(plato); // Llama a la función cuando se añade un plato
       console.log(data);
-      onPlatoAdded(); // Llama a la función cuando se añade un plato
     } catch (error) {
       console.error('An error occurred while fetching the data.', error);
     }
-    onClose();
   };
 
   return (
@@ -63,8 +59,8 @@ const ModalPlato: React.FC<Props> = ({ onClose, onPlatoAdded, idCategoria }) => 
       </div>
       <div>
         <label>
-          Ingredientes:
-          <input type="text" value={plato.description} onChange={(e) => handlePlatoChange('description', e.target.value)} required />
+          descripcion:
+          <input type="text" value={plato.descripcion} onChange={(e) => handlePlatoChange('descripcion', e.target.value)} required />
         </label>
       </div>
       <button type="submit">Agregar plato</button>

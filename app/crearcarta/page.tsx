@@ -5,31 +5,10 @@ import { Categoria, Carta, Plato } from '../../types'; // Asegúrate de que la r
 import { Card, Title, Text } from '@tremor/react';
 import CartaComponent from '../cartaComponent';  // Asegúrate de tener un componente CartaTable
 
-// interface Carta {
-//   id: number;
-//   nombre: string;
-//   categorias: Categoria[];
-// }
-
-// interface Categoria {
-//   id: number;
-//   nombre: string;
-//   orden: number;
-//   platos: Plato[];
-// }
-
-// interface Plato {
-//   nombre: string;
-//   precio: number;
-//   ingredientes: string;
-// }
 
 const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
   const [carta, setCarta] = useState<Carta | null>(null);
   const [nombre, setNombre] = useState('');
-  const [platoAdded, setPlatoAdded] = useState(false);  // Nuevo estado para rastrear cuando se añade un nuevo plato
-  const [categoriaAdded, setCategoriaAdded] = useState(false);  // Nuevo estado para rastrear cuando se añade un nuevo plato
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,7 +34,7 @@ const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
       data.carta.categorias.forEach((categoria: Categoria) => {
         console.log("orden de platos 0 y 1 e...: ", categoria.platos[0]?.orden, categoria.platos[1]?.orden)
       });
-      
+
       data.carta.categorias.forEach((categoria: Categoria) => {
         categoria.platos.sort((a: Plato, b: Plato) => a.orden - b.orden);
       });
@@ -65,7 +44,7 @@ const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
     };
 
     fetchData();
-  }, [idCarta, platoAdded, categoriaAdded]);  // Se ejecuta cuando se monta el componente, cada vez que idCarta cambia y cuando se añade un nuevo plato
+  }, [idCarta]);  // Se ejecuta cuando se monta el componente, cada vez que idCarta cambia y cuando se añade un nuevo plato
 
   if (!carta) {
     return <div>Loading...</div>;  // Puedes mostrar un spinner de carga aquí
@@ -75,7 +54,7 @@ const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
     <div className="carta">
       <MetaCartaEdit nombreInicial={carta.nombre} cartaID={idCarta} guardarNombre={setNombre} />
       <Card className="mt-6">
-        <CartaComponent carta={carta} onPlatoAdded={() => setPlatoAdded(!platoAdded)} onCategoriaAdded={() => setCategoriaAdded(!categoriaAdded)} /> {/* Pasar la función onPlatoAdded para ser llamada cuando se añada un nuevo plato */}
+        <CartaComponent carta={carta} />
       </Card>
     </div>
   );

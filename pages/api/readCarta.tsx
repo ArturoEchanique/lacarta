@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           await queryBuilder
             .insertInto('platos')
             .columns(['nombre', 'precio', 'categoria_id', 'ingredientes'])
-            .values({ nombre: plato.nombre, precio: plato.precio, categoria_id: idCategoria, ingredientes: plato.description })
+            .values({ nombre: plato.nombre, precio: plato.precio, categoria_id: idCategoria, ingredientes: plato.descripcion })
             .execute();
         }
       }
