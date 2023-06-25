@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const categoriasData = await queryBuilder
         .selectFrom('categorias')
-        .select(['nombre', 'orden', 'categoria_id'])
+        .select(['nombre', 'orden', 'categoria_id', 'visible'])
         .where('carta_id', '=', idCarta)
         .execute();
 

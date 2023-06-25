@@ -52,12 +52,12 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
 
     // Send a request to the backend
     try {
-      const response = await fetch('/api/updateCategoria', {
-        method: 'POST',
+      const response = await fetch('/api/updateCategoriaVisibility', {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ categoria: updatedCategoria }),
+        body: JSON.stringify({ idCategoria: updatedCategoria.id, visible: updatedCategoria.visible }),
       });
 
       if (!response.ok) {

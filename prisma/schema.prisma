@@ -12,6 +12,7 @@ model Categorias {
   carta_id     Int
   nombre       String
   orden        Int    @default(0)
+  visible       Boolean @default(true)
   
   @@map("categorias")
 }
