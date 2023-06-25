@@ -74,7 +74,7 @@ export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCa
       const data = await response.json();
       console.log(data);
     } catch (error) {
-      console.error('An error occurred while fetching the data.', error);
+      console.error('An error occurred while updating category order.', error);
     }
   }
 
@@ -95,7 +95,7 @@ export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCa
       const data = await response.json();
       console.log(data);
     } catch (error) {
-      console.error('An error occurred while fetching the data.', error);
+      console.error('An error occurred while updating plato order.', error);
     }
   }
 
@@ -113,6 +113,81 @@ export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCa
     // Actualizar el estado de platos a un array vacío
     // setPlatos([]);
   };
+
+  const handleDeleteCategoria = async (idCategoria: number) => {
+    const categoriaIndex = carta.categorias.findIndex((cat) => cat.id === idCategoria);
+    const categoriaToDelete = carta.categorias[categoriaIndex];
+
+    // remove categoria from UI immediately
+    setCarta(prevCarta => {
+      const newCarta = { ...prevCarta };
+      newCarta.categorias.splice(categoriaIndex, 1);
+      return newCarta;
+    });
+
+    try {
+      const response = await fetch(`/api/deleteCategoria`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idCategoria }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error('An error occurred while deleting categoria.', error);
+      // if deletion fails, add the categoria back to UI
+      setCarta(prevCarta => {
+        const newCarta = { ...prevCarta };
+        newCarta.categorias.splice(categoriaIndex, 0, categoriaToDelete);
+        return newCarta;
+      });
+    }
+  }
+
+  const handleDeletePlato = async (idPlato: number, categoriaId: number) => {
+    const categoriaIndex = carta.categorias.findIndex((cat) => cat.id === categoriaId);
+    const platoIndex = carta.categorias[categoriaIndex].platos.findIndex(plato => plato.id === idPlato);
+    const platoToDelete = carta.categorias[categoriaIndex].platos[platoIndex];
+
+    // remove plato from UI immediately
+    setCarta(prevCarta => {
+      const newCarta = { ...prevCarta };
+      newCarta.categorias[categoriaIndex].platos.splice(platoIndex, 1);
+      return newCarta;
+    });
+
+    try {
+      const response = await fetch(`/api/deletePlato`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idPlato }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error('An error occurred while deleting plato.', error);
+      // if deletion fails, add the plato back to UI
+      setCarta(prevCarta => {
+        const newCarta = { ...prevCarta };
+        newCarta.categorias[categoriaIndex].platos.splice(platoIndex, 0, platoToDelete);
+        return newCarta;
+      });
+    }
+  }
 
   return (
     <>
@@ -133,7 +208,10 @@ export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCa
                       <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                         <AccordionItem>
                           <AccordionHeader>
-                            <h2 className="text-xl font-bold mb-4">{categoria.nombre}</h2>
+                            <div className="flex justify-between items-center">
+                              <h2 className="text-xl font-bold mb-4">{categoria.nombre}</h2>
+                              <button onClick={() => handleDeleteCategoria(categoria.id)}>Borrar categoria</button>
+                            </div>
                           </AccordionHeader>
                           <AccordionBody>
                             <div className="bg-gray-200 p-4 rounded-lg">
@@ -154,7 +232,7 @@ export default function CartaComponent({ carta: initialCarta, onPlatoAdded, onCa
                                                   </div>
                                                 </div>
                                                 <p className="font-semibold">{plato.precio}</p>
-                                              </div>
+                                                <button onClick={() => handleDeletePlato(plato.id, categoria.id)}>Borrar plato</button>                                              </div>
                                             </div>
                                           )}
                                         </Draggable>
