@@ -6,6 +6,7 @@ export interface Plato {
   precio: number;
   descripcion: string;
   orden: number; // Añadido el campo 'orden'
+  visible: boolean;
 }
 
 export interface Categoria {
@@ -13,6 +14,7 @@ export interface Categoria {
   nombre: string;
   platos: Plato[];
   orden: number; // Añadido el campo 'orden'
+  visible: boolean;
 }
 
 export interface Carta {

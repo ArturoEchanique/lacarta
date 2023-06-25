@@ -10,7 +10,7 @@ interface Props {
 }
 
 const ModalPlato: React.FC<Props> = ({ onClose, onPlatoAdded, idCategoria, index }) => { // Y aquí
-  const [plato, setPlato] = useState<Plato>({ id: 0, idCategoria: idCategoria, nombre: '', precio: 0, descripcion: '', orden: index });
+  const [plato, setPlato] = useState<Plato>({ id: 0, idCategoria: idCategoria, nombre: '', precio: 0, descripcion: '', orden: index, visible: true });
 
   const handlePlatoChange = (field: string, value: string | number) => {
     setPlato(prevState => ({ ...prevState, [field]: value }));
@@ -36,7 +36,8 @@ const ModalPlato: React.FC<Props> = ({ onClose, onPlatoAdded, idCategoria, index
 
       // Aquí puedes manejar la respuesta si todo va bien
       const data = await response.json();
-      onPlatoAdded(plato); // Llama a la función cuando se añade un plato
+      const updatedPlato = { ...plato, id: data.plato.plato_id };
+      onPlatoAdded(updatedPlato); // Llama a la función cuando se añade un plato
       console.log(data);
     } catch (error) {
       console.error('An error occurred while fetching the data.', error);

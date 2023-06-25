@@ -10,7 +10,7 @@ interface Props {
 }
 
 const ModalCategoria: React.FC<Props> = ({ onClose, onCategoriaAdded, idCarta, index }) => {
-  const [categoria, setCategoria] = useState<Categoria>({ id: 0, nombre: '', platos: [], orden: index });
+  const [categoria, setCategoria] = useState<Categoria>({ id: 0, nombre: '', platos: [], orden: index, visible: true });
 
   const handleCategoriaChange = (field: string, value: string) => {
     setCategoria(prevState => ({ ...prevState, [field]: value }));

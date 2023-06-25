@@ -25,14 +25,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           id: catData.categoria_id,
           nombre: catData.nombre,
           orden: catData.orden,
-          platos: []
+          platos: [],
+          visible: catData.visible
         })),
       }));
 
       for (let i = 0; i < carta[0].categorias.length; i++) {
         const platosData = await queryBuilder
           .selectFrom('platos')
-          .select(['plato_id', 'nombre', 'precio', 'ingredientes', 'orden'])
+          .select(['plato_id', 'nombre', 'precio', 'ingredientes', 'orden', 'visible'])
           .where('categoria_id', '=', carta[0].categorias[i].id)
           .execute();
         const platos = platosData.map((data: any) => ({
@@ -41,7 +42,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           nombre: data.nombre,
           precio: data.precio,
           descripcion: data.ingredientes,
-          orden: data.orden
+          orden: data.orden,
+          visible: data.visible
         }));
         platos.forEach((plato, index) => {
           console.log(`Orden del plato ${index} en la categoría ${i}:`, plato.orden);

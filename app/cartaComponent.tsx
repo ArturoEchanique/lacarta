@@ -14,12 +14,6 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
 
   useEffect(() => {
     setCarta(initialCarta);
-    initialCarta.categorias.forEach((categoria) => {
-      console.log('Categoría:', categoria.nombre);
-      categoria.platos.forEach((plato) => {
-        console.log('Plato:', plato.nombre, 'Orden:', plato.orden);
-      });
-    });
   }, [initialCarta]);
 
   const handleOpenModalCategoria = () => {
@@ -43,6 +37,71 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
 
     setCarta((prevCarta) => ({ ...prevCarta, categorias: updatedItems }));
     updateCategoryOrder(updatedItems);
+  }
+
+  async function toggleCategoriaVisibility(categoriaId: number) {
+    const categoriaIndex = carta.categorias.findIndex((cat) => cat.id === categoriaId);
+    const updatedCategoria = { ...carta.categorias[categoriaIndex], visible: !carta.categorias[categoriaIndex].visible };
+
+    // Update the UI immediately
+    setCarta(prevCarta => {
+      const newCarta = { ...prevCarta };
+      newCarta.categorias[categoriaIndex] = updatedCategoria;
+      return newCarta;
+    });
+
+    // Send a request to the backend
+    try {
+      const response = await fetch('/api/updateCategoria', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ categoria: updatedCategoria }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error('An error occurred while updating the category visibility.', error);
+    }
+  }
+
+  async function togglePlatoVisibility(platoId: number, categoriaId: number) {
+    const categoriaIndex = carta.categorias.findIndex((cat) => cat.id === categoriaId);
+    const platoIndex = carta.categorias[categoriaIndex].platos.findIndex(plato => plato.id === platoId);
+    const updatedPlato = { ...carta.categorias[categoriaIndex].platos[platoIndex], visible: !carta.categorias[categoriaIndex].platos[platoIndex].visible };
+
+    // Update the UI immediately
+    setCarta(prevCarta => {
+      const newCarta = { ...prevCarta };
+      newCarta.categorias[categoriaIndex].platos[platoIndex] = updatedPlato;
+      return newCarta;
+    });
+
+    // Send a request to the backend
+    try {
+      const response = await fetch('/api/updatePlatoVisibility', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idPlato: updatedPlato.id, visible: updatedPlato.visible }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error('An error occurred while updating the dish visibility.', error);
+    }
   }
 
   const handleOnDragEndPlato = (categoryId: number) => (result: DropResult) => {
@@ -164,11 +223,7 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
     const platoToDelete = carta.categorias[categoriaIndex].platos[platoIndex];
 
     // remove plato from UI immediately
-    setCarta(prevCarta => {
-      const newCarta = { ...prevCarta };
-      newCarta.categorias[categoriaIndex].platos.splice(platoIndex, 1);
-      return newCarta;
-    });
+
 
     try {
       const response = await fetch(`/api/deletePlato`, {
@@ -184,15 +239,20 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
       }
 
       const data = await response.json();
+      setCarta(prevCarta => {
+        const newCarta = { ...prevCarta };
+        newCarta.categorias[categoriaIndex].platos.splice(platoIndex, 1);
+        return newCarta;
+      });
       console.log(data);
     } catch (error) {
       console.error('An error occurred while deleting plato.', error);
       // if deletion fails, add the plato back to UI
-      setCarta(prevCarta => {
-        const newCarta = { ...prevCarta };
-        newCarta.categorias[categoriaIndex].platos.splice(platoIndex, 0, platoToDelete);
-        return newCarta;
-      });
+      // setCarta(prevCarta => {
+      //   const newCarta = { ...prevCarta };
+      //   newCarta.categorias[categoriaIndex].platos.splice(platoIndex, 0, platoToDelete);
+      //   return newCarta;
+      // });
     }
   }
 
@@ -240,9 +300,12 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
                       <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
                         <AccordionItem key={categoria.id} isActive={categoria.platos.length < 4}>
                           <AccordionHeader>
-                            <div className="flex justify-between items-center">
+                            <div className="flex justify-between items-center" style={{ opacity: categoria.visible ? 1 : 0.5 }}>
                               <h2 className="text-xl font-bold mb-4">{categoria.nombre}</h2>
                               <button onClick={() => handleDeleteCategoria(categoria.id)}>Borrar categoria</button>
+                              <button onClick={() => toggleCategoriaVisibility(categoria.id)}>
+                                {categoria.visible ? 'Ocultar' : 'Mostrar'} categoría
+                              </button>
                             </div>
                           </AccordionHeader>
                           <AccordionBody>
@@ -255,7 +318,7 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
                                         <Draggable key={plato.nombre} draggableId={plato.nombre} index={index}>
                                           {(provided) => (
                                             <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                                              <div className="flex items-center justify-between mb-4" key={plato.nombre}>
+                                              <div className="flex items-center justify-between mb-4" key={plato.nombre} style={{ opacity: plato.visible ? 1 : 0.5 }}>
                                                 <div className="flex items-center">
                                                   <div className="w-10 h-10 bg-gray-400 rounded-full mr-4" />
                                                   <div>
@@ -264,7 +327,11 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
                                                   </div>
                                                 </div>
                                                 <p className="font-semibold">{plato.precio}</p>
-                                                <button onClick={() => handleDeletePlato(plato.id, categoria.id)}>Borrar plato</button>                                              </div>
+                                                <button onClick={() => handleDeletePlato(plato.id, categoria.id)}>Borrar plato</button>
+                                                <button onClick={() => togglePlatoVisibility(plato.id, categoria.id)}>
+                                                  {plato.visible ? 'Ocultar' : 'Mostrar'} plato
+                                                </button>
+                                              </div>
                                             </div>
                                           )}
                                         </Draggable>

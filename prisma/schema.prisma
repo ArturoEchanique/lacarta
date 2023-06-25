@@ -15,3 +15,15 @@ model Categorias {
   
   @@map("categorias")
 }
+
+model Platos {
+  plato_id      Int     @id @default(autoincrement())
+  nombre        String
+  precio        Decimal
+  ingredientes  String?
+  categoria_id  Int
+  orden         Int     @default(0)
+  visible       Boolean @default(true)
+
+  @@map("platos")
+}

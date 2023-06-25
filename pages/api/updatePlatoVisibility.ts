@@ -5,19 +5,17 @@ import { queryBuilder } from '../../lib/planetscale';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'POST') {
-        const { platos } = req.body;
+        const { idPlato, visible } = req.body;
         try {
-            await Promise.all(platos.map(async (plato: Plato) => {
-                await queryBuilder
-                    .updateTable('platos')
-                    .set({orden: plato.orden})
-                    .where('plato_id', '=', plato.id)
-                    .execute();
-            }));
+            await queryBuilder
+                .updateTable('platos')
+                .set({ visible: visible })
+                .where('plato_id', '=', idPlato)
+                .execute();
 
-            res.status(200).json({ message: 'Platos order updated successfully' });
+            res.status(200).json({ message: 'Platos visibility updated successfully' });
         } catch (error) {
-            res.status(500).json({ message: 'Error updating platos order' });
+            res.status(500).json({ message: 'Error updating platos visibility' });
             console.error(error);
         }
     } else {
