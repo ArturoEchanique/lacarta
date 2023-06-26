@@ -63,6 +63,7 @@ export default async function CartaPage({ params }: { params: paramsa }) {
       visible: data.visible
     }));
     categorias[i].platos = platos;
+    console.log(platos)
   }
 
   categorias.forEach((categoria: Categoria) => {

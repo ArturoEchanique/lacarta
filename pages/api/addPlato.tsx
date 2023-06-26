@@ -14,7 +14,7 @@ export default async function handler(
         data: {
           nombre: plato.nombre,
           precio: plato.precio,
-          ingredientes: plato.ingredientes,
+          ingredientes: plato.descripcion,
           categoria_id: plato.idCategoria,
           orden: plato.orden,
         },
