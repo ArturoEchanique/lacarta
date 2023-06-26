@@ -10,7 +10,7 @@ import Image from 'next/image';
 const navigation = [
   { name: 'Dashboard', href: '/' },
   { name: 'Playground', href: '/playground' },
-  { name: 'vercarta', href: '/vercarta' },
+  { name: 'vercarta', href: '/vercarta/1' }, // Aquí debes reemplazar 1 por el ID de la carta que quieras visualizar
   { name: 'crearcarta', href: '/crearcarta' },
 ];
 

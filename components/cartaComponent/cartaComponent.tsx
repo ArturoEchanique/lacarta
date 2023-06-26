@@ -2,9 +2,9 @@
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem } from "react-headless-accordion";
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import React, { useState, useEffect } from 'react';
-import { Categoria, Carta, Plato } from '../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
-import ModalContainerPlato from '../components/modalContainerPlato/ModalContainerPlato';
-import ModalContainerCategoria from '../components/modalContainerCategoria/ModalContainerCategoria';
+import { Categoria, Carta, Plato } from '../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
+import ModalContainerPlato from '../modalContainerPlato/ModalContainerPlato';
+import ModalContainerCategoria from '../modalContainerCategoria/ModalContainerCategoria';
 
 export default function CartaComponent({ carta: initialCarta }: { carta: Carta }) {
   const [showModalPlato, setShowModalPlato] = useState(false);

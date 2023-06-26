@@ -3,7 +3,7 @@ import { useState, useEffect, FC } from 'react';
 import MetaCartaEdit from '../../components/metaCartaEdit/MetaCartaEdit';
 import { Categoria, Carta, Plato } from '../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
 import { Card, Title, Text } from '@tremor/react';
-import CartaComponent from '../cartaComponent';  // Asegúrate de tener un componente CartaTable
+import CartaComponent from '../../components/cartaComponent/cartaComponent';  // Asegúrate de tener un componente CartaTable
 
 
 const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
