@@ -4,6 +4,7 @@ import MetaCartaEdit from '../../components/metaCartaEdit/MetaCartaEdit';
 import { Categoria, Carta, Plato } from '../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
 import { Card, Title, Text } from '@tremor/react';
 import CartaComponent from '../../components/cartaComponent/cartaComponent';  // Asegúrate de tener un componente CartaTable
+import QRCode from 'qrcode.react';
 
 
 const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
@@ -30,11 +31,6 @@ const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
       data.carta.categorias.sort((a: Categoria, b: Categoria) => a.orden - b.orden);
       console.log("orden de categorias es...: ", data.carta.categorias[0]?.orden, data.carta.categorias[1]?.orden)
 
-
-      data.carta.categorias.forEach((categoria: Categoria) => {
-        console.log("orden de platos 0 y 1 e...: ", categoria.platos[0]?.orden, categoria.platos[1]?.orden)
-      });
-
       data.carta.categorias.forEach((categoria: Categoria) => {
         categoria.platos.sort((a: Plato, b: Plato) => a.orden - b.orden);
       });
@@ -54,6 +50,7 @@ const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
     <div className="carta">
       <MetaCartaEdit nombreInicial={carta.nombre} cartaID={idCarta} guardarNombre={setNombre} />
       <Card className="mt-6">
+      <QRCode value={`http://localhost:3000/vercarta/${idCarta}`} />
         <CartaComponent carta={carta} />
       </Card>
     </div>

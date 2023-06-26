@@ -43,6 +43,9 @@ export default async function CartaPage({ params }: { params: paramsa }) {
     visible: data.visible
   }));
 
+  categorias.sort((a: Categoria, b: Categoria) => a.orden - b.orden);
+
+
   for (let i = 0; i < categorias.length; i++) {
     const platosData = await queryBuilder
       .selectFrom('platos')
@@ -59,20 +62,25 @@ export default async function CartaPage({ params }: { params: paramsa }) {
       orden: data.orden,
       visible: data.visible
     }));
-  categorias[i].platos = platos;
-}
-carta[0].categorias = categorias;
+    categorias[i].platos = platos;
+  }
+
+  categorias.forEach((categoria: Categoria) => {
+    categoria.platos.sort((a: Plato, b: Plato) => a.orden - b.orden);
+  });
+
+  carta[0].categorias = categorias;
 
 
-// if (carta[0]) {
-//   return <div>Loading...</div>;  // Puedes mostrar un spinner de carga aquí
-// }
+  // if (!carta[0]) {
+  //   return <div>Loading...</div>;  // Puedes mostrar un spinner de carga aquí
+  // }
 
-return (
-  <div className="carta">
-    <Card className="mt-6">
-      <VerCartaComponent carta={carta[0]} />
-    </Card>
-  </div>
-);
+  return (
+    <div className="carta">
+      <Card className="mt-6">
+        <VerCartaComponent carta={carta[0]} />
+      </Card>
+    </div>
+  );
 }
