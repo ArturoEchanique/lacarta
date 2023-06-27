@@ -398,7 +398,7 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
           editingPlato={editingPlato} // Aquí pasamos el plato que se está editando
           index={carta.categorias.find(cat => cat.id === categoriaID)?.platos.length || 0}
           onClose={() => { setShowModalPlato(false); setCategoriaID(null); }}
-          onPlatoEdited={onPlatoAdded}
+          onCompleted={onPlatoAdded}
         />
       }
       {showModalCategoria && carta.id !== null &&
@@ -415,7 +415,7 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
           editingPlato={editingPlato} // Aquí pasamos el plato que se está editando
           index={carta.categorias.find(cat => cat.id === categoriaID)?.platos.findIndex(plato => plato.id === platoID) || 0}
           onClose={() => { setShowModalPlatoEdit(false); setCategoriaID(null); setPlatoID(null); setEditingPlato(null); }}
-          onPlatoEdited={onPlatoEdited}
+          onCompleted={onPlatoEdited}
         />
       }
     </>

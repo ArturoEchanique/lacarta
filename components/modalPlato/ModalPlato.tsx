@@ -3,13 +3,13 @@ import { Plato } from '../../types';
 
 interface Props {
   onClose: () => void;
-  onPlatoEdited: (plato: Plato) => void;
+  onCompleted: (plato: Plato) => void;
   idCategoria: number;
   index: number;
   editingPlato: Plato | null;
 }
 
-const ModalPlato: React.FC<Props> = ({ onClose, onPlatoEdited, idCategoria, index, editingPlato }) => {
+const ModalPlato: React.FC<Props> = ({ onClose, onCompleted, idCategoria, index, editingPlato }) => {
   const [plato, setPlato] = useState<Plato>(editingPlato || {
     id: 0,
     idCategoria: idCategoria,
@@ -27,35 +27,63 @@ const ModalPlato: React.FC<Props> = ({ onClose, onPlatoEdited, idCategoria, inde
     setPlato(prevState => ({ ...prevState, [field]: value }));
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleAddPlato = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onClose();
+  
     try {
-      const endpoint = editingPlato ? '/api/editPlato' : '/api/addPlato';
-      const response = await fetch(endpoint, {
+      const response = await fetch('/api/addPlato', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ plato }),
       });
-
+  
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
+  
       const data = await response.json();
-      const updatedPlato = { ...plato, id: data.plato.plato_id };
-      onPlatoEdited(updatedPlato);
+      const addedPlato = { ...plato, id: data.plato.plato_id };
+      onCompleted(addedPlato);
       console.log(data);
     } catch (error) {
-      console.error('An error occurred while fetching the data.', error);
+      console.error('An error occurred while adding the data.', error);
     }
   };
-
+  
+  const handleEditPlato = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onClose();
+  
+    try {
+      const response = await fetch('/api/editPlato', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ plato }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      const updatedPlato = { ...plato, id: data.plato.plato_id };
+      onCompleted(updatedPlato);
+      console.log(data);
+    } catch (error) {
+      console.error('An error occurred while editing the data.', error);
+    }
+  };
+  
+  // Y ahora en el form puedes utilizar la función correspondiente de la siguiente manera:
+  
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
+    <form onSubmit={editingPlato ? handleEditPlato : handleAddPlato}>
+    <div>
         <label>
           Nombre:
           <input type="text" value={plato.nombre} onChange={(e) => handlePlatoChange('nombre', e.target.value)} required />
