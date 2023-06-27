@@ -212,11 +212,11 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
     } catch (error) {
       console.error('An error occurred while deleting categoria.', error);
       // if deletion fails, add the categoria back to UI
-      setCarta(prevCarta => {
-        const newCarta = { ...prevCarta };
-        newCarta.categorias.splice(categoriaIndex, 0, categoriaToDelete);
-        return newCarta;
-      });
+      // setCarta(prevCarta => {
+      //   const newCarta = { ...prevCarta };
+      //   newCarta.categorias.splice(categoriaIndex, 0, categoriaToDelete);
+      //   return newCarta;
+      // });
     }
   }
 
@@ -226,7 +226,11 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
     const platoToDelete = carta.categorias[categoriaIndex].platos[platoIndex];
 
     // remove plato from UI immediately
-
+    setCarta(prevCarta => {
+      const newCarta = { ...prevCarta };
+      newCarta.categorias[categoriaIndex].platos.splice(platoIndex, 1);
+      return newCarta;
+    });
 
     try {
       const response = await fetch(`/api/deletePlato`, {
@@ -242,15 +246,11 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
       }
 
       const data = await response.json();
-      setCarta(prevCarta => {
-        const newCarta = { ...prevCarta };
-        newCarta.categorias[categoriaIndex].platos.splice(platoIndex, 1);
-        return newCarta;
-      });
+     
       console.log(data);
     } catch (error) {
       console.error('An error occurred while deleting plato.', error);
-      // if deletion fails, add the plato back to UI
+      //if deletion fails, add the plato back to UI
       // setCarta(prevCarta => {
       //   const newCarta = { ...prevCarta };
       //   newCarta.categorias[categoriaIndex].platos.splice(platoIndex, 0, platoToDelete);
