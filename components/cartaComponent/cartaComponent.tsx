@@ -11,6 +11,9 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
   const [categoriaID, setCategoriaID] = useState<number | null>(null);
   const [showModalCategoria, setShowModalCategoria] = useState(false);
   const [carta, setCarta] = useState<Carta>(initialCarta);
+  const [showModalPlatoEdit, setShowModalPlatoEdit] = useState(false);
+  const [platoID, setPlatoID] = useState<number | null>(null);
+  const [editingPlato, setEditingPlato] = useState<Plato | null>(null);
 
   useEffect(() => {
     setCarta(initialCarta);
@@ -256,6 +259,27 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
     }
   }
 
+  const onCategoriaAdded = (categoria: Categoria) => {
+
+    setCarta(prevCarta => {
+      const newCarta = { ...prevCarta };
+      newCarta.categorias.push(categoria);
+      return newCarta;
+    });
+  }
+
+  const handleOpenModalPlatoEdit = (categoryId: number, platoId: number) => {
+    setCategoriaID(categoryId);
+    setPlatoID(platoId);
+
+    const categoriaIndex = carta.categorias.findIndex((cat) => cat.id === categoryId);
+    const plato = carta.categorias[categoriaIndex].platos.find(plato => plato.id === platoId);
+
+    setEditingPlato(plato? plato : null)
+
+    setShowModalPlatoEdit(true);
+  };
+
   const onPlatoAdded = (plato: Plato) => {
     // Encuentra la categoría a la que se debe agregar el plato
     const categoriaIndex = carta.categorias.findIndex((cat) => cat.id === plato.idCategoria);
@@ -272,14 +296,26 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
     });
   }
 
-  const onCategoriaAdded = (categoria: Categoria) => {
+  const onPlatoEdited = (editedPlato: Plato) => {
+    const categoriaIndex = carta.categorias.findIndex((cat) => cat.id === editedPlato.idCategoria);
+    if (categoriaIndex === -1) {
+      console.error('La categoría no se encontró en la carta.');
+      return;
+    }
+
+    const platoIndex = carta.categorias[categoriaIndex].platos.findIndex(plato => plato.id === editedPlato.id);
+    if (platoIndex === -1) {
+      console.error('El plato no se encontró en la categoría.');
+      return;
+    }
 
     setCarta(prevCarta => {
       const newCarta = { ...prevCarta };
-      newCarta.categorias.push(categoria);
+      newCarta.categorias[categoriaIndex].platos[platoIndex] = editedPlato;
       return newCarta;
     });
   }
+
 
   return (
     <>
@@ -331,6 +367,7 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
                                                 <button onClick={() => togglePlatoVisibility(plato.id, categoria.id)}>
                                                   {plato.visible ? 'Ocultar' : 'Mostrar'} plato
                                                 </button>
+                                                <button onClick={() => handleOpenModalPlatoEdit(categoria.id, plato.id)}>Editar plato</button>
                                               </div>
                                             </div>
                                           )}
@@ -358,9 +395,10 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
       {showModalPlato && categoriaID !== null &&
         <ModalContainerPlato
           idCategoria={categoriaID}
+          editingPlato={editingPlato} // Aquí pasamos el plato que se está editando
           index={carta.categorias.find(cat => cat.id === categoriaID)?.platos.length || 0}
           onClose={() => { setShowModalPlato(false); setCategoriaID(null); }}
-          onPlatoAdded={onPlatoAdded}
+          onPlatoEdited={onPlatoAdded}
         />
       }
       {showModalCategoria && carta.id !== null &&
@@ -369,6 +407,15 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
           index={carta.categorias.length || 0}
           onClose={() => { setShowModalCategoria(false); }}
           onCategoriaAdded={onCategoriaAdded}
+        />
+      }
+      {showModalPlatoEdit && categoriaID !== null && platoID !== null &&
+        <ModalContainerPlato
+          idCategoria={categoriaID}
+          editingPlato={editingPlato} // Aquí pasamos el plato que se está editando
+          index={carta.categorias.find(cat => cat.id === categoriaID)?.platos.findIndex(plato => plato.id === platoID) || 0}
+          onClose={() => { setShowModalPlatoEdit(false); setCategoriaID(null); setPlatoID(null); setEditingPlato(null); }}
+          onPlatoEdited={onPlatoEdited}
         />
       }
     </>

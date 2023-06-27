@@ -10,7 +10,10 @@ export default async function handler(
   if (req.method === "POST") {
     const { plato } = req.body;
     try {
-      const newPlato = await prisma.platos.create({
+      const updatedPlato = await prisma.platos.update({
+        where: {
+          plato_id: plato.id
+        },
         data: {
           nombre: plato.nombre,
           precio: plato.precio,
@@ -21,8 +24,8 @@ export default async function handler(
       });
 
       res.status(200).json({
-        message: "Plato added successfully",
-        plato: newPlato,
+        message: "Plato updated successfully",
+        plato: updatedPlato,
       });
     } catch (error) {
       res.status(500).json({ message: "Error updating plato" });
