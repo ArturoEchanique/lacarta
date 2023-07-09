@@ -6,12 +6,29 @@ import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { signIn, signOut } from 'next-auth/react';
 import Image from 'next/image';
+import SignInButton from '../app/components/SignInButton'
 
 const navigation = [
   { name: 'Dashboard', href: '/' },
   { name: 'Playground', href: '/playground' },
   { name: 'vercarta', href: '/vercarta/1' }, // Aquí debes reemplazar 1 por el ID de la carta que quieras visualizar
   { name: 'crearcarta', href: '/crearcarta' },
+  { name: 'Protected (server)', href: '/protected/server' },
+  { name: 'Protected (client)', href: '/protected/client' },
+  { name: 'Protected (client)', href: '/protected/client' },
+
+//   <li className='text-sm'>
+//   <Link href='/'>Home</Link>
+// </li>
+// <li className='text-sm'>
+//   <Link href='/protected/server'>Protected (server)</Link>
+// </li>
+// <li className='text-sm'>
+//   <Link href='/protected/client'>Protected (client)</Link>
+// </li>
+// <li>
+//   <SignInButton />
+// </li>
 ];
 
 function classNames(...classes: string[]) {
@@ -67,6 +84,7 @@ export default function Navbar({ user }: { user: any }) {
                       {item.name}
                     </a>
                   ))}
+                  <SignInButton />
                 </div>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:items-center">

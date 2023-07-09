@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plato } from '../../types';
+import { Plato } from '../../../types';
 
 interface Props {
   onClose: () => void;
@@ -30,7 +30,7 @@ const ModalPlato: React.FC<Props> = ({ onClose, onCompleted, idCategoria, index,
   const handleAddPlato = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onClose();
-  
+
     try {
       const response = await fetch('/api/addPlato', {
         method: 'POST',
@@ -39,11 +39,11 @@ const ModalPlato: React.FC<Props> = ({ onClose, onCompleted, idCategoria, index,
         },
         body: JSON.stringify({ plato }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const data = await response.json();
       const addedPlato = { ...plato, id: data.plato.plato_id };
       onCompleted(addedPlato);
@@ -52,11 +52,11 @@ const ModalPlato: React.FC<Props> = ({ onClose, onCompleted, idCategoria, index,
       console.error('An error occurred while adding the data.', error);
     }
   };
-  
+
   const handleEditPlato = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onClose();
-  
+
     try {
       const response = await fetch('/api/editPlato', {
         method: 'POST',
@@ -65,11 +65,11 @@ const ModalPlato: React.FC<Props> = ({ onClose, onCompleted, idCategoria, index,
         },
         body: JSON.stringify({ plato }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const data = await response.json();
       const updatedPlato = { ...plato, id: data.plato.plato_id };
       onCompleted(updatedPlato);
@@ -78,12 +78,12 @@ const ModalPlato: React.FC<Props> = ({ onClose, onCompleted, idCategoria, index,
       console.error('An error occurred while editing the data.', error);
     }
   };
-  
+
   // Y ahora en el form puedes utilizar la función correspondiente de la siguiente manera:
-  
+
   return (
     <form onSubmit={editingPlato ? handleEditPlato : handleAddPlato}>
-    <div>
+      <div>
         <label>
           Nombre:
           <input type="text" value={plato.nombre} onChange={(e) => handlePlatoChange('nombre', e.target.value)} required />

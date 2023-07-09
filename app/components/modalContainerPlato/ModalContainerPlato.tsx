@@ -1,7 +1,7 @@
 // ModalContainerPlato.tsx
 import React from 'react';
 import ModalPlato from '../modalPlato/ModalPlato';
-import { Plato } from '../../types';
+import { Plato } from '../../../types';
 
 interface Props {
   onClose: () => void;

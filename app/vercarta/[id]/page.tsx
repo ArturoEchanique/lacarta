@@ -1,16 +1,24 @@
 import { useState, useEffect, FC } from 'react';
-import MetaCartaEdit from '../../../components/metaCartaEdit/MetaCartaEdit';
+import MetaCartaEdit from '../../components/metaCartaEdit/MetaCartaEdit';
 import { Categoria, Carta, Plato } from '../../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
 import { Card, Title, Text } from '@tremor/react';
 import type { AppProps } from 'next/app'
 import { queryBuilder } from '../../../lib/planetscale';
-import VerCartaComponent from '../../../components/verCartaComponent/verCartaComponent';  // Asegúrate de tener un componente CartaTable
+import VerCartaComponent from '../../components/verCartaComponent/verCartaComponent';  // Asegúrate de tener un componente CartaTable
+import { getServerSession } from 'next-auth/next'
+import { redirect } from 'next/navigation'
+import { authOptions } from '../../api/auth/[...nextauth]/route'
 
 
 export interface paramsa {
   id: number
 }
 export default async function CartaPage({ params }: { params: paramsa }) {
+
+  // const session = await getServerSession(authOptions)
+  // if (!session) {
+  //   redirect('/signin?callbackUrl=/protected/server')
+  // }
 
   const idCarta = params.id
   console.log("id carta is", idCarta)

@@ -2,7 +2,7 @@
 import { Accordion, AccordionBody, AccordionHeader, AccordionItem } from "react-headless-accordion";
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import React, { useState, useEffect } from 'react';
-import { Categoria, Carta, Plato } from '../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
+import { Categoria, Carta, Plato } from '../../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
 import ModalContainerPlato from '../modalContainerPlato/ModalContainerPlato';
 import ModalContainerCategoria from '../modalContainerCategoria/ModalContainerCategoria';
 
@@ -246,7 +246,7 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
       }
 
       const data = await response.json();
-     
+
       console.log(data);
     } catch (error) {
       console.error('An error occurred while deleting plato.', error);
@@ -275,7 +275,7 @@ export default function CartaComponent({ carta: initialCarta }: { carta: Carta }
     const categoriaIndex = carta.categorias.findIndex((cat) => cat.id === categoryId);
     const plato = carta.categorias[categoriaIndex].platos.find(plato => plato.id === platoId);
 
-    setEditingPlato(plato? plato : null)
+    setEditingPlato(plato ? plato : null)
 
     setShowModalPlatoEdit(true);
   };

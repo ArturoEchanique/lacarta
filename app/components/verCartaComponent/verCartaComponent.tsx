@@ -1,5 +1,5 @@
 import React from 'react';
-import { Carta } from '../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
+import { Carta } from '../../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
 
 export default function VerCartaComponent({ carta }: { carta: Carta }) {
 

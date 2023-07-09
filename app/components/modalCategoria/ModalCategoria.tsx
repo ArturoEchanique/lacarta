@@ -1,12 +1,12 @@
 // ModalCategoria.tsx
 import React, { useState } from 'react';
-import { Categoria } from '../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
+import { Categoria } from '../../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
 
 interface Props {
   onClose: () => void;
   onCategoriaAdded: (categoria: Categoria) => void;
   idCarta: number;
-  index:number;
+  index: number;
 }
 
 const ModalCategoria: React.FC<Props> = ({ onClose, onCategoriaAdded, idCarta, index }) => {
@@ -27,23 +27,23 @@ const ModalCategoria: React.FC<Props> = ({ onClose, onCategoriaAdded, idCarta, i
         },
         body: JSON.stringify({ idCarta, categoria }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const data = await response.json();
-  
+
       // Actualiza el objeto categoria con el ID recibido del servidor
       const updatedCategoria = { ...categoria, id: data.categoria.categoria_id };
-  
+
       onCategoriaAdded(updatedCategoria);
       console.log(data);
     } catch (error) {
       console.error('An error occurred while fetching the data.', error);
     }
   };
-  
+
   return (
     <form onSubmit={handleSubmit}>
       <div>

@@ -1,15 +1,23 @@
 'use client';
 import { useState, useEffect, FC } from 'react';
-import MetaCartaEdit from '../../components/metaCartaEdit/MetaCartaEdit';
+import MetaCartaEdit from '../components/metaCartaEdit/MetaCartaEdit';
 import { Categoria, Carta, Plato } from '../../types'; // Asegúrate de que la ruta al archivo 'types.ts' sea correcta
 import { Card, Title, Text } from '@tremor/react';
-import CartaComponent from '../../components/cartaComponent/cartaComponent';  // Asegúrate de tener un componente CartaTable
+import CartaComponent from '../components/cartaComponent/cartaComponent';  // Asegúrate de tener un componente CartaTable
 import QRCode from 'qrcode.react';
+import { useSession } from 'next-auth/react'
+import { redirect } from 'next/navigation'
 
 
 const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
   const [carta, setCarta] = useState<Carta | null>(null);
   const [nombre, setNombre] = useState('');
+  // const { data: session } = useSession({
+  //   required: true,
+  //   onUnauthenticated() {
+  //     redirect('/signin?callbackUrl=/protected/client')
+  //   }
+  // })
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,7 +58,7 @@ const CartaPage: FC<{ idCarta: number }> = ({ idCarta = 1 }) => {
     <div className="carta">
       <MetaCartaEdit nombreInicial={carta.nombre} cartaID={idCarta} guardarNombre={setNombre} />
       <Card className="mt-6">
-      <QRCode value={`http://localhost:3000/vercarta/${idCarta}`} />
+        <QRCode value={`http://localhost:3000/vercarta/${idCarta}`} />
         <CartaComponent carta={carta} />
       </Card>
     </div>
