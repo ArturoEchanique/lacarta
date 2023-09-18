@@ -7,7 +7,7 @@ import { queryBuilder } from '../../../lib/planetscale';
 import VerCartaComponent from '../../components/verCartaComponent/verCartaComponent';  // Asegúrate de tener un componente CartaTable
 import { getServerSession } from 'next-auth/next'
 import { redirect } from 'next/navigation'
-import { authOptions } from '../../api/auth/[...nextauth]/route'
+import { authOptions } from '../../../pages/api/auth/[...nextauth]/route'
 
 
 export interface paramsa {
